@@ -86,16 +86,18 @@ The default options are :
     // set to false if you want to parse non-strict xml
     strict: true,
 
-    // whether or not to trim text and comment nodes. If you intend to pretty print, you should set it to true
+    // whether or not to trim text and comment nodes
+    // (if you intend to pretty print, you should set it to true)
     trim: false,
 
-    // if true, turn any whitespace into a single space.
+    // if true, turn any whitespace into a single space
     normalize: false,
 
-    // if true, lowercase tag names and attribute names in loose mode, rather than uppercasing them
+    // if true, lowercase tag and attribute names instead of uppercasing
     lowercase: true,
 
-    // if true, only parse predefined XML entities (&amp; &apos; &gt; &lt; and &quot;)
+    // if true, only parse predefined XML entities
+    // (&amp; &apos; &gt; &lt; and &quot;)
     strictEntities: false,
 }
 ```
@@ -132,7 +134,9 @@ The `find` function has three brothers, which all take the same arguments :
 - `findChild` : do not search recursively, only amongst direct children. Return the first result.
 - `findAllChild` : Return all the result amongst direct children only.
 
-Every string passed to these functions will be transformed into regular expressions, following these two very simple rules : all `*` characters will be treated as `.*`, and all `?` characters will be treated as `.`.
+Every string passed to these functions will be transformed into regular expressions with this very simple rule : all `*` characters will be treated as `.*`
+
+Be aware that if you use special characters (like `[`, `]`) they will be treated as part of the regular expression unless you double-escape them.
 
 
 ### Walk method
@@ -157,7 +161,6 @@ Every string passed to these functions will be transformed into regular expressi
 - `toJson()` : Create clean and reusable JSON.
 
 
-<br>
 <br>
 
 *Be an artist*

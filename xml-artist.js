@@ -326,7 +326,7 @@ function matcher(name='', attributes=[]) {
 function getExpression(str) {
 	if (!str || str == '*') return /.*/
 	if (str instanceof RegExp) return str
-	return new RegExp('^' + str.replace(/\*/g, '.*').replace(/\?/g, '.') + '$')
+	return new RegExp('^' + str.replace(/\*/g, '.*') + '$')
 }
 
 
