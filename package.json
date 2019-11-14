@@ -1,0 +1,32 @@
+{
+  "name": "xml-artist",
+  "version": "1.0.0",
+  "description": "Read, manipulate and render xml files like an artist",
+  "main": "xml-artist.js",
+  "scripts": {
+    "test": "node test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lepzulnag/xml-artist.git"
+  },
+  "keywords": [
+    "xml",
+    "handler",
+    "render",
+    "builder",
+    "manipulate",
+    "sax"
+  ],
+  "author": "Lepzulnag",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Lepzulnag/xml-artist/issues"
+  },
+  "homepage": "https://github.com/Lepzulnag/xml-artist#readme",
+  "dependencies": {
+    "fartest": "^1.1.1",
+    "sax": "^1.2.4"
+  },
+  "devDependencies": {}
+}

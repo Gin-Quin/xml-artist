@@ -1,0 +1,29 @@
+<heroes>
+	<hero name="Zabu" class="warrior">
+		<name>Zabu</name>
+		<strength>351321</strength>
+	</hero>
+	<hero name="Hercule" class="warrior">
+		<name>Hercule</name>
+		<strength>512</strength>
+	</hero>
+	<hero name="Coco" class="child">
+		<name>Coco</name>
+		<strength>13</strength>
+	</hero>
+
+	<friends>
+		<hero name="Zabu" class="warrior">
+			<name>Zabu</name>
+			<strength>351321</strength>
+		</hero>
+		<hero name="Hercule" class="warrior">
+			<name>Hercule</name>
+			<strength>512</strength>
+		</hero>
+		<hero name="Coco" class="child">
+			<name>Coco</name>
+			<strength>13</strength>
+		</hero>
+	</friends>
+</heroes>
