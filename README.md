@@ -19,9 +19,11 @@ const XML = require('xml-artist')
 const data = XML.parseFile('input.xml')
 
 // we find all nodes which name begin with `hero:` and which have the attribute `name`
+// and we replace them by some text
 for (const node of data.findAll('hero:*', ['name']))
     node.replaceWith(`I'm a hero and my name is ${node.attributes.name}`)
 
+// we write the transformed xml to an output file
 data.toXmlFile('output.xml')
 ```
 
@@ -75,17 +77,26 @@ const json = data.toJson()
 const sameDataButFromJson = XML.parseJson(json)
 ```
 
-### Options
+### Parsing options
 
 The default options are :
 
 ``` typescript
 {
-    strict: true,  // Strict xml. Set to false if you want to parse html also.
-    trim: false,  // Whether or not to trim text and comment nodes. If you intend to pretty print, you should set it to true.
-    normalize: false,  // If true, then turn any whitespace into a single space.
-    lowercase: true,  // If true, then lowercase tag names and attribute names in loose mode, rather than uppercasing them.
-    strictEntities: false,  // If true, only parse predefined XML entities (&amp;, &apos;, &gt;, &lt;, and &quot;)
+    // set to false if you want to parse non-strict xml
+    strict: true,
+
+    // whether or not to trim text and comment nodes. If you intend to pretty print, you should set it to true
+    trim: false,
+
+    // if true, turn any whitespace into a single space.
+    normalize: false,
+
+    // if true, lowercase tag names and attribute names in loose mode, rather than uppercasing them
+    lowercase: true,
+
+    // if true, only parse predefined XML entities (&amp; &apos; &gt; &lt; and &quot;)
+    strictEntities: false,
 }
 ```
 
@@ -121,13 +132,10 @@ The `find` function has three brothers, which all take the same arguments :
 - `findChild` : do not search recursively, only amongst direct children. Return the first result.
 - `findAllChild` : Return all the result amongst direct children only.
 
-Every string passed to these functions will be transformed into regular expressions, following these two very simple rules :
-
-- All `*` characters will be treated as `.*`
-- All `?` characters will be treated as `.`
+Every string passed to these functions will be transformed into regular expressions, following these two very simple rules : all `*` characters will be treated as `.*`, and all `?` characters will be treated as `.`.
 
 
-### Walk methods
+### Walk method
 
 - `walk(xmlNodeCallback: Function, textCallback?: Function)` : let you walk recursively through the tree with two callback functions. Every `XmlNode` will be passed to the first one, and every `text`/`comment`/`cdata` will be passed to the second one. This function returns the first non-null result received by one of the callback functions.
 
@@ -149,5 +157,7 @@ Every string passed to these functions will be transformed into regular expressi
 - `toJson()` : Create clean and reusable JSON.
 
 
+<br>
+<br>
 
 *Be an artist*
