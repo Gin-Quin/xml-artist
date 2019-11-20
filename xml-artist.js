@@ -65,8 +65,27 @@ XML.XmlNode = class XmlNode {
 		return this.children.find(matcher(name, attributes)) || null
 	}
 
-	findAllChild(name, attributes) {
+	findAllChildren(name, attributes) {
 		return this.children.filter(matcher(name, attributes))
+	}
+
+	findParent(name, attributes) {
+		const match = matcher(name, attributes)
+		let parent = this
+		while ((parent = parent.parent) && parent.name)
+			if (match(parent))
+				return parent
+		return null
+	}
+
+	findAllParents(name, attributes) {
+		const match = matcher(name, attributes)
+		const matches = []
+		let parent = this
+		while ((parent = parent.parent) && parent.name)
+			if (match(parent))
+				matches.push(parent)
+		return matches
 	}
 
 	match(name, attributes) {
@@ -100,18 +119,25 @@ XML.XmlNode = class XmlNode {
 
 	replaceWith(xmlNode) {
 		const {parent} = this
-		const isntText = typeof xmlNode != 'string'
-		if (isntText)  // we remove it from the place it was before (if it had a parent)
-			xmlNode.remove()
+		if (!parent) return this
+		const {children} = parent
+		const indexOfThis = children.indexOf(this)
 
-		if (parent) {
-			const {children} = parent
-			children[children.indexOf(this)] = xmlNode
-			delete this.parent
-			if (isntText)
-				xmlNode.parent = parent
+		if (Array.isArray(xmlNode)) {
+			xmlNode
+			.filter(node => node instanceof XmlNode)
+			.forEach(node => { node.remove() ; node.parent = parent })
+			children.splice(indexOfThis, 1, ...xmlNode)
 		}
+		else if (xmlNode instanceof XmlNode) {
+			xmlNode.remove()
+			xmlNode.parent = parent
+			children[indexOfThis] = xmlNode
+		}
+		else
+			children[indexOfThis] = xmlNode
 
+		delete this.parent
 		return this
 	}
 
@@ -143,16 +169,31 @@ XML.XmlNode = class XmlNode {
 	}
 
 	push(xmlNode, before=-1) {
-		if (typeof xmlNode != 'string') {
+		if (typeof before == 'object')
+			before = before ? -1 : this.children.indexOf(before)
+
+		// array
+		if (Array.isArray(xmlNode)) {
+			xmlNode
+			.filter(node => node instanceof XmlNode)
+			.forEach(node => { node.remove() ; node.parent = this })
+			if (before == -1)
+				this.children.push(...xmlNode)
+			else
+				this.children.splice(before, 0, ...xmlNode)
+			return this
+		}
+
+		// XmlNode or string
+		if (xmlNode instanceof XmlNode) {
 			xmlNode.remove()
 			xmlNode.parent = this
 		}
-		if (typeof before == 'object')
-			before = before ? -1 : this.children.indexOf(before)
 		if (before == -1)
 			this.children.push(xmlNode)
 		else
 			this.children.splice(before, 0, xmlNode)
+
 		return this
 	}
 

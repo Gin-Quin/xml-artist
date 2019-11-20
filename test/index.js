@@ -22,10 +22,11 @@ start(function() {
 	let data = XML.parseFile('test/file-sample-B.xml', {trim: true})
 
 	let heroes = data.find('heroes')
+	let friends = heroes.findChild('friends')
 	test(heroes, "Find heroes")
 
 	test(heroes.findAll(['name=Zabu']).length == 2, "Find two zabus")
-	test(heroes.findAllChild(['name=Zabu']).length == 1, "Find one direct zabu child")
+	test(heroes.findAllChildren(['name=Zabu']).length == 1, "Find one direct zabu child")
 	test(heroes.findAll(['class=warrior']).length == 4, "Find four warriors")
 	test(heroes.find('friends').findAll(['class=warrior']).length == 2, "Find two warrior friends")
 
@@ -43,6 +44,27 @@ start(function() {
 
 	heroes.find(['name=Hercule']).pushTo(heroes.find('friends'))
 	test(heroes.findChild(['name=Hercule']) == null, "Hercule is not a hero")
-	test(heroes.find('friends').findAllChild(['name=Hercule']).length = 2, "There are 2 Hercule friends now")
+	test(heroes.find('friends').findAllChildren(['name=Hercule']).length = 2, "There are 2 Hercule friends now")
+
+	stage("Find parents")
+	var h = heroes.find(['name=Hercule'])
+	test(h.findParent('friends'), "Hercule should have a friends parent")
+	test(h.findParent('heroes'), "Hercule should have a heroes parent")
+	test(h.findAllParents().length == 2, "Hercule has 2 parents")
+
+	stage("Push array")
+	var heroesToMove = heroes.findAllChildren('hero')
+	var numberOfFriends = friends.children.length
+	friends.push(heroesToMove)
+	test(heroes.findAllChildren('hero').length == 0, "There shouldnt have any more heroes")
+	test(friends.children.length == numberOfFriends + heroesToMove.length, "All should be friends now")
+
+	stage("ReplaceWith array")
+	var numberOfChildren = heroes.children.length - 1
+	var numberOfCocos = friends.findAllChildren(['name=Coco']).length
+	friends.replaceWith(friends.findAllChildren(['name=Coco']))
+	test(heroes.find('friends') == null, "Friends should not exist")
+	test(heroes.children.length == numberOfChildren + numberOfCocos, "There should be only Cocos left")
+	test(heroes.findAllChildren(['name=Coco']).length == numberOfCocos, "Only Cocos!")
 })
 
