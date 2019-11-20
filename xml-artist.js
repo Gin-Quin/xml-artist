@@ -15,14 +15,14 @@ function XML() {
 XML.parse = function(xml, options) {
 	if (Buffer.isBuffer(xml))
 		xml = xml.toString()
-	return (new XML.XmlNode).parse(xml, options)
+	return (new XmlNode).parse(xml, options)
 }
 
 /**
 * Same but from a JSON string
 */
 XML.parseJson = function(json) {
-	return new XML.XmlNode(JSON.parse(json))
+	return new XmlNode(JSON.parse(json))
 }
 
 /**
@@ -31,21 +31,21 @@ XML.parseJson = function(json) {
 XML.parseFile = function(filename, options) {
 	const { readFileSync } = require('fs')
 	let fileContent = readFileSync(filename, (options && options.encoding) || 'utf8')
-	return (new XML.XmlNode).parse(fileContent, options)
+	return (new XmlNode).parse(fileContent, options)
 }
 
 
 /**
 * Main class
 */
-XML.XmlNode = class XmlNode {
+class XmlNode {
 	constructor(node) {
 		const { name, attributes, children, processingInstructions } = node || {}
 		this.name = name || ''
 		this.attributes = attributes || {}
 		this.children = []
 		if (children) for (const child of children)
-			this.push(typeof child == 'string' ? child : new XmlNode(child))
+			this.push(typeof child == 'object' ? new XmlNode(child) : child)
 		if (processingInstructions)
 			this.processingInstructions = [ ...processingInstructions ]
 	}
@@ -101,18 +101,15 @@ XML.XmlNode = class XmlNode {
 
 		for (let child of this.children) {
 
-			if (typeof child == 'string') {
-				if (textCallback)
-					result = textCallback(this, child)
-			}
-			
-			else {
+			if (child instanceof XmlNode) {
 				if (nodeCallback)
 					result = nodeCallback(child)
 				if (result) return result
 				result = child.walk(nodeCallback, textCallback)
 			}
-
+			else if (textCallback)
+				result = textCallback(this, child)
+			
 			if (result) return result
 		}
 	}
@@ -198,8 +195,9 @@ XML.XmlNode = class XmlNode {
 	}
 
 	empty() {
-		for (let child of this.children) if (typeof child != 'string')
-			delete child.parent
+		for (let child of this.children)
+			if (child instanceof XmlNode)
+				delete child.parent
 		this.children = []
 		return this
 	}
@@ -276,10 +274,10 @@ XML.XmlNode = class XmlNode {
 		}
 		
 		for (const child of this.children) {
-			if (typeof child == 'string')
-				childrenXml += (pretty ? indentChild : '') + replaceWithEntities(child)
-			else
+			if (child instanceof XmlNode)
 				childrenXml += child.toXml(pretty, indentLevel+1)
+			else
+				childrenXml += (pretty ? indentChild : '') + replaceWithEntities(child)
 			if (pretty) childrenXml += '\n'
 		}
 
@@ -321,14 +319,14 @@ XML.XmlNode = class XmlNode {
 		const rawThis = {
 			name: this.name,
 			attributes: this.attributes,
-			children: this.children.map(child => typeof child == 'string' ? child : child.raw)
+			children: this.children.map(child => child instanceof XmlNode ? child.raw : child)
 		}
 		if (this.processingInstructions)
 			rawThis.processingInstructions = this.processingInstructions
 		return rawThis
 	}
 }
-
+XML.XmlNode = XmlNode
 
 /**
 * Return a function which match a node with the given expression
@@ -354,7 +352,7 @@ function matcher(name='', attributes=[]) {
 	// tag name
 	const nameExpression = getExpression(name)
 	return node =>
-		typeof node != 'string'
+		node instanceof XmlNode
 		&& nameExpression.test(node.name)
 		&& attributesMatch(node)
 		? node : null
@@ -367,6 +365,7 @@ function matcher(name='', attributes=[]) {
 function getExpression(str) {
 	if (!str || str == '*') return /.*/
 	if (str instanceof RegExp) return str
+	str = String(str)
 	return new RegExp('^' + str.replace(/\*/g, '.*') + '$')
 }
 
@@ -394,6 +393,8 @@ function getAttributeExpression(query) {
 * Replace some special symbols by their xml entities
 */
 function replaceWithEntities(str) {
+	if (typeof str != 'string')
+		console.log('!', str)
 	return str
 		.replace(/&/g, '&amp;')  // must be the first to be replaced ; guess why :p
 		.replace(/</g, '&lt;')

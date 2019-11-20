@@ -12,10 +12,12 @@ start(function() {
 
 	stage("Produce xml")
 	root.toXml()
+	root.toXmlFile('test/file-sample-output.xml')
 
 	stage("Transform to and from JSON")
 	let root2 = XML.parseJson(root.toJson())
-	test(root.toXml() == root2.toXml())
+	root2.toXmlFile('test/file-sample-output-2.xml')
+	test(root.toXml() == root2.toXml(), 'Reverse XML should be the same')
 
 
 	stage("Find some elements")

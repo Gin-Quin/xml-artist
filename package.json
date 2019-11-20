@@ -1,6 +1,6 @@
 {
   "name": "xml-artist",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Read, manipulate and render xml files like an artist",
   "main": "xml-artist.js",
   "scripts": {
