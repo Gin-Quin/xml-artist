@@ -112,6 +112,7 @@ class XmlNode {
     name : String
     attributes : { [key : String] : String }
     children : [ XmlNode | String ]
+    parent? : XmlNode
     processingInstructions? : [ { name: String, body: String} ]
 }
 ```
@@ -119,6 +120,21 @@ class XmlNode {
 Every `XmlNode` has the field `children` which can contain plain text or other `XmlNode`s.
 
 The `processingInstructions` field is not always defined and contains the `name` and `body` informations of tags which have the form : `<?${name} ${body}?>`.
+
+
+### Constructor
+The constructor takes as single argument a XmlNode-like object :
+
+``` typescript
+const { XmlNode } = XML
+let node = new XmlNode({
+    name: "foo",
+    attributes: {
+        bar: 1234
+    }
+})
+node.pushTo(data)
+```
 
 
 ### Finder methods
@@ -133,6 +149,8 @@ The `find` function has three brothers, which all take the same arguments :
 - `findAll` : return an array of nodes instead of the first one.
 - `findChild` : do not search recursively, only amongst direct children. Return the first result.
 - `findAllChild` : Return all the result amongst direct children only.
+- `findParent` : Return the first matching parent.
+- `findAllParents` : Return an array of all matching parents (closer parents first).
 
 Every string passed to these functions will be transformed into regular expressions with this very simple rule : all `*` characters will be treated as `.*`
 
@@ -146,11 +164,13 @@ Be aware that if you use special characters (like `[`, `]`) they will be treated
 
 ### Tree mutator methods
 
+- `push(element: XmlNode|String, before?: Integer|XmlNode)` : push a new child. The `before` parameter indicates before which XmlNode element (or index) the new child should be pushed.
+- `push(arrayOfElements: [XmlNode|String], before?: Integer|XmlNode)` : you can also push an array of elements, which can be very handful in combination with the `findAll` method. You should use this method if you plan to push many elements at once for speed efficiency.
 - `replaceWith(element: XmlNode|String)` : replace an element by another one. *Note :* if the element already belonged to the tree, it is moved (not copied). If you want to create a copy, use the `clone` method first.
+- `replaceWith(arrayOfElements: [XmlNode|String])` : you can also replace with an array of elements, which can be very handful in combination with the `findAll` method.
 - `clone()` : create a copy of an element. Every children will be cloned too.
 - `remove()` : self-remove from the tree.
 - `removeChild(element: XmlNode|String)` : remove the given child element.
-- `push(element: XmlNode|String, before?: Integer|XmlNode)` : push a new child. The `before` parameter indicates before which XmlNode element (or index) the new child should be pushed.
 - `pushTo(element: XmlNode, before?: Integer|XmlNode)` : move itself as a new child to the given XmlNode.
 - `empty()` : remove every children.
 
