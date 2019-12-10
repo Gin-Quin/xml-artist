@@ -77,7 +77,7 @@ const json = data.toJson()
 const sameDataButFromJson = XML.parseJson(json)
 ```
 
-### Parsing options
+### Options
 
 The default options are :
 
@@ -159,7 +159,16 @@ Be aware that if you use special characters (like `[`, `]`) they will be treated
 
 ### Walk method
 
-- `walk(xmlNodeCallback: Function, textCallback?: Function)` : let you walk recursively through the tree with two callback functions. Every `XmlNode` will be passed to the first one, and every `text`/`comment`/`cdata` will be passed to the second one. This function returns the first non-null result received by one of the callback functions.
+- `walk(xmlNodeCallback: Function, textCallback?: Function)` : let you walk recursively through the tree with two callback functions.
+
+Every `XmlNode` will be passed to the `xmlNodeCallback` function, and every `text`/`comment`/`cdata` will be passed to `textCallback`. The callback functions have the following signature :
+
+```ts
+xmlNodeCallback(node: XmlNode) : ? 
+textCallback(value: String, parent: XmlNode) : ? 
+```
+
+if a non-null (ie not `null` and not `undefined`) value is returned by one of the callback functions, the walking stops and this value is returned by the `walk` method.
 
 
 ### Tree mutator methods
@@ -179,6 +188,7 @@ Be aware that if you use special characters (like `[`, `]`) they will be treated
 - `toXml(pretty: Boolean)` : Generate XML, pretty-printed or not. If you want to pretty-print your xml, you should consider to set the `trim` option to `true` when parsing.
 - `toXmlFile(filename: String, pretty: Boolean)` : Generate XML and write it to the given file.
 - `toJson()` : Create clean and reusable JSON.
+- `get innerText()` : Return the text of the node.
 
 
 <br>

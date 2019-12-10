@@ -108,7 +108,7 @@ class XmlNode {
 				result = child.walk(nodeCallback, textCallback)
 			}
 			else if (textCallback)
-				result = textCallback(this, child)
+				result = textCallback(child, this)
 			
 			if (result) return result
 		}
@@ -247,6 +247,13 @@ class XmlNode {
 
 		parser.write(xml).close()
 		return this
+	}
+
+	get innerText() {
+		let text = ''
+		for (let child of this.children)
+			text += child instanceof XmlNode ? child.innerText() : child
+		return text
 	}
 
 
