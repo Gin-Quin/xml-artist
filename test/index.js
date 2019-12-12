@@ -20,17 +20,20 @@ start(function() {
 	test(root.toXml() == root2.toXml(), 'Reverse XML should be the same')
 
 
-	stage("Find some elements")
 	let data = XML.parseFile('test/file-sample-B.xml', {trim: true})
 
 	let heroes = data.find('heroes')
 	let friends = heroes.findChild('friends')
-	test(heroes, "Find heroes")
 
+	stage("Find some elements")
+	test(heroes, "Find heroes")
 	test(heroes.findAll(['name=Zabu']).length == 2, "Find two zabus")
 	test(heroes.findAllChildren(['name=Zabu']).length == 1, "Find one direct zabu child")
 	test(heroes.findAll(['class=warrior']).length == 4, "Find four warriors")
 	test(heroes.find('friends').findAll(['class=warrior']).length == 2, "Find two warrior friends")
+
+	stage("innerText")
+	test(heroes.findChild(['name=Zabu']).innerText == 'Zabu351321')
 
 
 	stage("Glob matching")
@@ -69,4 +72,3 @@ start(function() {
 	test(heroes.children.length == numberOfChildren + numberOfCocos, "There should be only Cocos left")
 	test(heroes.findAllChildren(['name=Coco']).length == numberOfCocos, "Only Cocos!")
 })
-

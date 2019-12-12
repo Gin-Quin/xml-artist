@@ -109,7 +109,7 @@ class XmlNode {
 			}
 			else if (textCallback)
 				result = textCallback(child, this)
-			
+
 			if (result) return result
 		}
 	}
@@ -252,7 +252,7 @@ class XmlNode {
 	get innerText() {
 		let text = ''
 		for (let child of this.children)
-			text += child instanceof XmlNode ? child.innerText() : child
+			text += child instanceof XmlNode ? child.innerText : child
 		return text
 	}
 
@@ -279,7 +279,7 @@ class XmlNode {
 				if (pretty) childrenXml += '\n'
 			}
 		}
-		
+
 		for (const child of this.children) {
 			if (child instanceof XmlNode)
 				childrenXml += child.toXml(pretty, indentLevel+1)
