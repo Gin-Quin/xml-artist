@@ -77,5 +77,5 @@ start(function() {
 	let htmlRoot = XML.parseFile('test/html-sample.html', {trim: true, strict: false})
 
 	stage("Check <br> is self-closing")
-	test(htmlRoot.findChild('p').children.length == 3, 'The paragraph should have three children')
+	test(htmlRoot.findChild('p').children.length == 5, 'The paragraph should have three children')
 })
