@@ -2,6 +2,24 @@
 
 const sax = require('sax')
 
+const htmlSelfClosingTags = [
+	'area',
+	'base',
+	'br',
+	'col',
+	'embed',
+	'hr',
+	'img',
+	'input',
+	'keygen',
+	'link',
+	'meta',
+	'param',
+	'source',
+	'track',
+	'wbr'
+]
+
 function XML() {
 	let result = ''
 	for (let arg of arguments)
@@ -229,8 +247,15 @@ class XmlNode {
 			oncdata(data) { cdata += data },
 			onclosecdata() { currentNode.children.push(cdata + ']]>') },
 
-			onopentag(node) { currentNode = (new XmlNode(node)).pushTo(currentNode) },
-			onclosetag() { currentNode = currentNode.parent },
+			onopentag(node) {
+				node = (new XmlNode(node)).pushTo(currentNode)
+				if (options.strict || !htmlSelfClosingTags.includes(node.name))
+					currentNode = node
+			},
+			onclosetag(name) {
+				if (options.strict || !htmlSelfClosingTags.includes(name))
+					currentNode = currentNode.parent
+			},
 
 			// onopennamespace() { console.log('<<', arguments) },
 			// onclosenamespace() { console.log('>>', arguments) },

@@ -71,4 +71,11 @@ start(function() {
 	test(heroes.find('friends') == null, "Friends should not exist")
 	test(heroes.children.length == numberOfChildren + numberOfCocos, "There should be only Cocos left")
 	test(heroes.findAllChildren(['name=Coco']).length == numberOfCocos, "Only Cocos!")
+
+	// we test reading html
+	stage("Read html file")
+	let htmlRoot = XML.parseFile('test/html-sample.html', {trim: true, strict: false})
+
+	stage("Check <br> is self-closing")
+	test(htmlRoot.findChild('p').children.length == 3, 'The paragraph should have three children')
 })
