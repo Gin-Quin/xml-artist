@@ -398,7 +398,7 @@ function getExpression(str) {
 	if (!str || str == '*') return /.*/
 	if (str instanceof RegExp) return str
 	str = String(str)
-	return new RegExp('^' + str.replace(/\*/g, '.*') + '$')
+	return new RegExp('^' + str.replace(/\*/gi, '.*') + '$')
 }
 
 
