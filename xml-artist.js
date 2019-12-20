@@ -240,7 +240,7 @@ class XmlNode {
 
 		Object.assign(parser, {
 			ontext(text) { currentNode.children.push(text) },
-			oncomment(text) { currentNode.children.push(text) },
+			oncomment(text) { currentNode.children.push('<!--'+text+'-->') },
 			ondoctype(doctype) { currentNode.children.push(doctype) },
 
 			onopencdata() { cdata = '<![CDATA[' },
