@@ -132,6 +132,25 @@ class XmlNode {
 		}
 	}
 
+	async asyncWalk(nodeCallback, textCallback=null) {
+		let result
+
+		for (let child of this.children) {
+			if (child instanceof XmlNode) {
+				if (nodeCallback)
+					result = await nodeCallback(child)
+				if (result)
+					return result
+				result = await child.asyncWalk(nodeCallback, textCallback)
+			}
+			else if (textCallback)
+				result = await textCallback(child, this)
+
+			if (result)
+				return result
+		}
+	}
+
 	replaceWith(xmlNode) {
 		const {parent} = this
 		if (!parent) return this
