@@ -78,4 +78,33 @@ start(function() {
 
 	stage("Check <br> is self-closing")
 	test(htmlRoot.findChild('p').children.length == 6, 'The paragraph should have 6 children')
+
+	// test comment / doctype / cdata
+	stage("Read file C")
+	let xml = XML.parseFile('test/file-sample-C.xml', {trim: true})
+
+	stage("Check walker")
+	let numberOfComments=0, numberOfTexts=0, numberOfTags=0, numberOfData=0, numberOfDocType=0
+	xml.walk({
+		text() { numberOfTexts++ },
+		comment() { numberOfComments++ },
+		node() { numberOfTags++ },
+		cdata() { numberOfData++ },
+		doctype() { numberOfDocType++ },
+	})
+	test(numberOfTexts == 3, "Should have 3 text elements")
+	test(numberOfComments == 3, "Should have 3 comments")
+	test(numberOfTags == 3, "Should have 3 tags")
+	test(numberOfData == 1, "Should have 1 cdata")
+	test(numberOfDocType == 1, "Should have 1 doctype")
+
+	stage("Check retro walker")
+	numberOfComments=0, numberOfTexts=0
+	xml.walk(
+		function() { numberOfTexts++ },
+		function() { numberOfComments++ },
+	)
+	test(numberOfTexts == 3, "Should have 3 text elements")
+	test(numberOfComments == 3, "Should have 3 comments")
+
 })

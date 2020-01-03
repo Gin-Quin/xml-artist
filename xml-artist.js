@@ -114,40 +114,94 @@ class XmlNode {
 		return new XmlNode(this)
 	}
 
-	walk(nodeCallback, textCallback=null) {
+	walk(callback, textCallback=null) {
+		if (typeof callback == 'function')
+			return this.newWalk({
+				node: callback,
+				text: textCallback,
+			})
+		return this.newWalk(callback)
+	}
+	asyncWalk(callback, textCallback=null) {
+		if (typeof callback == 'function')
+			return this.newAsyncWalk({
+				node: callback,
+				text: textCallback,
+			})
+		return this.newAsyncWalk(callback)
+	}
+
+	newWalk({node, text, comment, doctype, cdata}={}) {
 		let result
 
 		for (let child of this.children) {
-
 			if (child instanceof XmlNode) {
-				if (nodeCallback)
-					result = nodeCallback(child)
+				if (node)
+					result = node(child)
 				if (result) return result
-				result = child.walk(nodeCallback, textCallback)
+				result = child.newWalk({node, text, comment, doctype, cdata})
 			}
-			else if (textCallback)
-				result = textCallback(child, this)
+			else {
+				if (child[0] != '<') {
+					if (text)
+						result = text(child, this)
+				}
+				else if (child.startsWith('<!--')) {
+					if (comment)
+						result = comment(child.slice(4, -3), this)
+				}
+				else if (child.startsWith('<![CDATA[')) {
+					if (cdata)
+						result = cdata(child.slice(9, -3), this)
+				}
+				else if (child[1] == '!') {
+					if (doctype)
+						result = doctype(child.slice(2, -1), this)
+				}
+				else {  // it must be text.. or malformed html
+					if (text)
+						result = text(child, this)
+				}
+			}
 
 			if (result) return result
 		}
 	}
 
-	async asyncWalk(nodeCallback, textCallback=null) {
+	async newAsyncWalk({node, text, comment, doctype, cdata}={}) {
 		let result
 
 		for (let child of this.children) {
 			if (child instanceof XmlNode) {
-				if (nodeCallback)
-					result = await nodeCallback(child)
-				if (result)
-					return result
-				result = await child.asyncWalk(nodeCallback, textCallback)
+				if (node)
+					result = await node(child)
+				if (result) return result
+				result = await child.newAsyncWalk({node, text, comment, doctype, cdata})
 			}
-			else if (textCallback)
-				result = await textCallback(child, this)
+			else {
+				if (child[0] != '<') {
+					if (text)
+						result = await text(child, this)
+				}
+				else if (child.startsWith('<!--')) {
+					if (comment)
+						result = await comment(child.slice(4, -3), this)
+				}
+				else if (child.startsWith('<![CDATA[')) {
+					if (cdata)
+						result = await cdata(child.slice(9, -3), this)
+				}
+				else if (child[1] == '!') {
+					if (doctype)
+						result = await doctype(child.slice(2, -1), this)
+				}
+				else {  // it must be text.. or malformed html
+					if (text)
+						result = await text(child, this)
+				}
+			}
 
-			if (result)
-				return result
+			if (result) return result
 		}
 	}
 
@@ -260,7 +314,7 @@ class XmlNode {
 		Object.assign(parser, {
 			ontext(text) { currentNode.children.push(text) },
 			oncomment(text) { currentNode.children.push('<!--'+text+'-->') },
-			ondoctype(doctype) { currentNode.children.push(doctype) },
+			ondoctype(doctype) { currentNode.children.push('<!'+doctype+'>') },
 
 			onopencdata() { cdata = '<![CDATA[' },
 			oncdata(data) { cdata += data },

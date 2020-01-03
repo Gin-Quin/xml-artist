@@ -93,7 +93,8 @@ The default options are :
     // if true, turn any whitespace into a single space
     normalize: false,
 
-    // if true, lowercase tag and attribute names instead of uppercasing
+    // if true, lowercase tag and attribute names
+	 // instead of uppercasing
     lowercase: true,
 
     // if true, only parse predefined XML entities
@@ -104,6 +105,8 @@ The default options are :
 
 
 ## The XmlNode object
+
+
 
 ### Properties
 
@@ -141,7 +144,7 @@ node.pushTo(data)
 
 - `find(name: String|RegExp)` : return the first XmlNode with the matching name, or `null` if no result is found.
 - `find(attributes: [String])` : same, but take an array of attributes as argument. *Exemple :* `find(['id', 'class=foo*'])` will find the first node which have the attribute `id` and a value beginning by 'foo' for the attribute `class`.
-- `find(name: String|RegExp, attributes: [String])` : same, but with conditions on the name and the attributes. 
+- `find(name: String|RegExp, attributes: [String])` : same, but with conditions on the name and the attributes.
 - `find(callback: Function)` : You can also specifiy your own function to match the desired node. Your function must return the node itself it is valid, or a null value otherwise.
 
 The `find` function has three brothers, which all take the same arguments :
@@ -157,18 +160,36 @@ Every string passed to these functions will be transformed into regular expressi
 Be aware that if you use special characters (like `[`, `]`) they will be treated as part of the regular expression unless you double-escape them.
 
 
-### Walk method
+### Walk methods
 
-- `walk(xmlNodeCallback: Function, textCallback?: Function)` : let you walk recursively through the tree with two callback functions.
-
-Every `XmlNode` will be passed to the `xmlNodeCallback` function, and every `text`/`comment`/`cdata` will be passed to `textCallback`. The callback functions have the following signature :
 
 ```ts
-xmlNodeCallback(node: XmlNode) : ? 
-textCallback(value: String, parent: XmlNode) : ? 
+xmlNode.walk({
+  node(xmlNode) {...},
+  text(value, xmlNodeParent) {...},
+  comment(value, xmlNodeParent) {...},
+  cdata(value, xmlNodeParent) {...},
+  doctype(value, xmlNodeParent) {...},
+})
 ```
 
-if a non-null (ie not `null` and not `undefined`) value is returned by one of the callback functions, the walking stops and this value is returned by the `walk` method.
+You pass an object to the `walk` function that can have up to five callback functions, one for each type of child a xmlNode can have.
+
+If a non-null (ie not `null` and not `undefined`) value is returned by one of the callback functions, the walking stops and this value is returned by the `walk` method.
+
+If you need to pass asynchronous functions as callbacks, call the asynchronous version of the walker :
+
+```ts
+await xmlNode.asyncWalk({
+  async node(xmlNode) {...},
+  async text(value, xmlNodeParent) {...},
+  async comment(value, xmlNodeParent) {...},
+  async cdata(value, xmlNodeParent) {...},
+  async doctype(value, xmlNodeParent) {...},
+})
+```
+
+When using `asyncWalk`, you can mix `async` and `sync` callbacks.
 
 
 ### Tree mutator methods
@@ -188,6 +209,8 @@ if a non-null (ie not `null` and not `undefined`) value is returned by one of th
 - `toXml(pretty: Boolean)` : Generate XML, pretty-printed or not. If you want to pretty-print your xml, you should consider to set the `trim` option to `true` when parsing.
 - `toXmlFile(filename: String, pretty: Boolean)` : Generate XML and write it to the given file.
 - `toJson()` : Create clean and reusable JSON.
+
+### Other methods (and getters)
 - `get innerText()` : Return the text of the node.
 
 

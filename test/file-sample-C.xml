@@ -1,0 +1,11 @@
+<!doctype content of doctype>
+<body>
+	<!-- Comment A -->
+	<tag1>Text A</tag1>
+	<!-- Comment B -->
+	<tag2>Text B</tag2>
+	<!-- Comment C -->
+	Text C
+
+	<![CDATA[Content of cdata]]>
+</body>
