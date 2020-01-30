@@ -147,17 +147,18 @@ node.pushTo(data)
 - `find(name: String|RegExp, attributes: [String])` : same, but with conditions on the name and the attributes.
 - `find(callback: Function)` : You can also specifiy your own function to match the desired node. Your function must return the node itself it is valid, or a null value otherwise.
 
-The `find` function has three brothers, which all take the same arguments :
-
-- `findAll` : return an array of nodes instead of the first one.
-- `findChild` : do not search recursively, only amongst direct children. Return the first result.
-- `findAllChild` : Return all the result amongst direct children only.
-- `findParent` : Return the first matching parent.
-- `findAllParents` : Return an array of all matching parents (closer parents first).
-
 Every string passed to these functions will be transformed into regular expressions with this very simple rule : all `*` characters will be treated as `.*`
 
 Be aware that if you use special characters (like `[`, `]`) they will be treated as part of the regular expression unless you double-escape them.
+
+
+The following finder functions all take the same argument(s) :
+
+- `findAll` : return an array of nodes instead of the first one.
+- `findChild` : do not search recursively, only amongst direct children. Return the first result.
+- `findAllChildren` : Return all the result amongst direct children only.
+- `findParent` : Return the first matching parent.
+- `findAllParents` : Return an array of all matching parents (closer parents first).
 
 
 ### Walk methods
@@ -198,11 +199,11 @@ When using `asyncWalk`, you can mix `async` and `sync` callbacks.
 - `push(arrayOfElements: [XmlNode|String], before?: Integer|XmlNode)` : you can also push an array of elements, which can be very handful in combination with the `findAll` method. You should use this method if you plan to push many elements at once for speed efficiency.
 - `replaceWith(element: XmlNode|String)` : replace an element by another one. *Note :* if the element already belonged to the tree, it is moved (not copied). If you want to create a copy, use the `clone` method first.
 - `replaceWith(arrayOfElements: [XmlNode|String])` : you can also replace with an array of elements, which can be very handful in combination with the `findAll` method.
-- `clone()` : create a copy of an element. Every children will be cloned too.
+- `clone()` : create a copy of an element. All children will be cloned too.
 - `remove()` : self-remove from the tree.
 - `removeChild(element: XmlNode|String)` : remove the given child element.
 - `pushTo(element: XmlNode, before?: Integer|XmlNode)` : move itself as a new child to the given XmlNode.
-- `empty()` : remove every children.
+- `empty()` : remove all children.
 
 ### Renderer methods
 
