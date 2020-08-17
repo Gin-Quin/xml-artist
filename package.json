@@ -1,15 +1,48 @@
 {
-  "name": "xml-artist",
-  "version": "2.0.11",
+  "_from": "xml-artist",
+  "_id": "xml-artist@2.0.11",
+  "_inBundle": false,
+  "_integrity": "sha512-X3aFC5kXHfnGjY6Prn01KcqvGY9OjjBES8kpma5NTHW3AKiIkQNzhiU0EclJbkYifCoZMzKxNMej0NpldbkMzg==",
+  "_location": "/xml-artist",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "xml-artist",
+    "name": "xml-artist",
+    "escapedName": "xml-artist",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/xml-artist/-/xml-artist-2.0.11.tgz",
+  "_shasum": "f0f087074504c9b501f91783d70e622401be95f2",
+  "_spec": "xml-artist",
+  "_where": "/media/data/Projects/abg",
+  "author": {
+    "name": "Lepzulnag"
+  },
+  "bugs": {
+    "url": "https://github.com/Lepzulnag/xml-artist/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "sax": "^1.2.4"
+  },
+  "deprecated": false,
   "description": "Read, manipulate and render xml files like an artist",
-  "main": "xml-artist.js",
-  "scripts": {
-    "test": "node test"
+  "devDependencies": {
+    "@types/jest": "^26.0.7",
+    "fartest": "^1.1.1",
+    "jest": "^26.1.0",
+    "ts-jest": "^26.1.4",
+    "typescript": "^3.9.7"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Lepzulnag/xml-artist.git"
-  },
+  "homepage": "https://github.com/Lepzulnag/xml-artist#readme",
   "keywords": [
     "xml",
     "handler",
@@ -18,16 +51,34 @@
     "manipulate",
     "sax"
   ],
-  "author": "Lepzulnag",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Lepzulnag/xml-artist/issues"
+  "main": "xml-artist.js",
+  "name": "xml-artist",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lepzulnag/xml-artist.git"
   },
-  "homepage": "https://github.com/Lepzulnag/xml-artist#readme",
-  "dependencies": {
-    "sax": "^1.2.4"
+  "scripts": {
+    "test": "node test",
+    "test-ts": "jest"
   },
-  "devDependencies": {
-    "fartest": "^1.1.1"
+  "version": "2.0.11",
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "transform": {
+      "\\.(ts|tsx)$": "ts-jest"
+    },
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "testMatch": [
+      "**/test/index.ts"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules"
+    ]
   }
 }
